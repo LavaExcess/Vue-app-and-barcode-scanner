@@ -1,4 +1,4 @@
-# 
+#
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -26,4 +26,12 @@ npm run dev
 
 ```sh
 npm run build
+```
+
+
+### Run in Docker
+
+```sh
+docker build -t barcode/lastest .
+docker run -e 8080:80 barcode/latest
 ```
