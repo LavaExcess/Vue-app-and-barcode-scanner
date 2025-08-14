@@ -23,9 +23,9 @@
   font-weight: inherit;
 }
 
-
-
-
+:root {
+  --index: calc(1vw + 1vh);
+}
 
 body {
   font-family:
@@ -48,7 +48,8 @@ body {
   color: #C6DF9D;
 }
 
-h3,p {
+h3,
+p {
   font-family:
     'X5Sans-Regular'
 }

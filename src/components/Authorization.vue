@@ -1,46 +1,48 @@
 <template>
     <div class="container">
         <div class="gradient-circle"></div>
-        <img src="@/assets/img/layer1.png" alt="Background layer" class="image" />
-        <SVGx5 class="logo" />
-        <div v-if="currentState === 'waiting'">
-            <div class="wrapper">
-                <h2 class="hello">Отсканируйте своё приглашение</h2>
-                <input ref="barcodeInput" v-model="barcode" type="text"
-                    style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
-                <!-- Удалить строку в релизе. Для тестов-->
-                <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" />
+        <div class="container-image">
+            <SVGx5 class="logo" />
+            <div v-if="currentState === 'waiting'">
+                <div class="wrapper">
+                    <h2 class="hello">Отсканируйте своё приглашение</h2>
+                    <input ref="barcodeInput" v-model="barcode" type="text"
+                        style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
+                    <!-- Удалить строку в релизе. Для тестов-->
+                    <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" />
+                </div>
             </div>
-        </div>
-        <div v-else-if="currentState === 'greeting'">
-            <div class="wrapper">
-                <h3 class="hello">{{ greetingMessage }}, рады Вас видеть в</h3>
-                <div class="rectangle">
-                    <div class="rectangle-green">
-                        <h2 class=" text-x5">Х5</h2>
-                    </div>
-                    <div class="rectangle-gradient">
-                        <h2 class="text-podsobke">ПОДСОБКЕ</h2>
+            <div v-else-if="currentState === 'greeting'">
+                <div class="wrapper">
+                    <h3 class="hello">{{ greetingMessage }}, рады Вас видеть в</h3>
+                    <div class="rectangle">
+                        <div class="rectangle-green">
+                            <h2 class=" text-x5">Х5</h2>
+                        </div>
+                        <div class="rectangle-gradient">
+                            <h2 class="text-podsobke">ПОДСОБКЕ</h2>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div v-else-if="currentState === 'error'">
-            <div class="wrapper">
-                <h3 class="hello">Дорогой гость,<br>рады видеть Вас в</h3>
-                <div class="rectangle">
-                    <div class="rectangle-green">
-                        <h2 class=" text-x5">Х5</h2>
+            <div v-else-if="currentState === 'error'">
+                <div class="wrapper">
+                    <h3 class="hello">Дорогой гость,<br>рады видеть Вас в</h3>
+                    <div class="rectangle">
+                        <div class="rectangle-green">
+                            <h2 class=" text-x5">Х5</h2>
+                        </div>
+                        <div class="rectangle-gradient">
+                            <h2 class="text-podsobke">ПОДСОБКЕ</h2>
+                        </div>
                     </div>
-                    <div class="rectangle-gradient">
-                        <h2 class="text-podsobke">ПОДСОБКЕ</h2>
-                    </div>
+                    <p class="notification">
+                        Для внесения в список <br> вам необходимо обратиться <br> к администратору зала
+                    </p>
                 </div>
-                <p class="notification">
-                    Для внесения в список <br> вам необходимо обратиться <br> к администратору зала
-                </p>
             </div>
         </div>
+
     </div>
 </template>
 <script setup>
@@ -102,10 +104,7 @@ onMounted(() => {
 
 <style>
 .container {
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1080px;
+    width: 100%;
     height: 1920px;
     background-color: #003E14;
 
@@ -116,20 +115,27 @@ onMounted(() => {
     top: 107px;
     left: 50%;
     transform: translateX(-50%);
+
 }
 
-.image {
-    position: absolute;
-    pointer-events: none;
+.container-image {
+    width: 100%;
+    height: 100%;
+    position: relative;
     user-select: none;
+    background-image: url("@/assets/img/layer1.png");
+    background-size: cover;
+    overflow: visible;
 }
+
 
 .gradient-circle {
     position: absolute;
-    width: 2047px;
-    height: 2047px;
-    left: -483px;
-    top: -853px;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    top: -50%;
+    transform: translateX(-50%);
     background: radial-gradient(circle at center,
             rgba(13, 103, 6, 0.138) 0%,
             rgba(0, 50, 16, 0.46) 100%);
@@ -143,6 +149,7 @@ input {
     margin-top: 10px;
     padding: 8px;
     font-size: 16px;
+    z-index: 1000;
 }
 
 
