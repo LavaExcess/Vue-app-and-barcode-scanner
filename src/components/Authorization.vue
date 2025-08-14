@@ -1,23 +1,52 @@
 <template>
-    <div class="Container">
+    <div class="container">
+        <div class="gradient-circle"></div>
+        <img src="@/assets/img/layer1.png" alt="Background layer" class="image" />
+        <SVGx5 class="logo" />
         <div v-if="currentState === 'waiting'">
-            <h2>Сканируйте штрих-код</h2>
-            <input ref="barcodeInput" v-model="barcode" type="text"
-                style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
-            <!-- Удалить строку в релизе. Для тестов-->
-            <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" />
+            <div class="wrapper">
+                <h2 class="hello">Отсканируйте своё приглашение</h2>
+                <input ref="barcodeInput" v-model="barcode" type="text"
+                    style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
+                <!-- Удалить строку в релизе. Для тестов-->
+                <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" />
+            </div>
         </div>
         <div v-else-if="currentState === 'greeting'">
-            <h2>{{ greetingMessage }}</h2>
+            <div class="wrapper">
+                <h3 class="hello">{{ greetingMessage }}, рады Вас видеть в</h3>
+                <div class="rectangle">
+                    <div class="rectangle-green">
+                        <h2 class=" text-x5">Х5</h2>
+                    </div>
+                    <div class="rectangle-gradient">
+                        <h2 class="text-podsobke">ПОДСОБКЕ</h2>
+                    </div>
+                </div>
+            </div>
         </div>
         <div v-else-if="currentState === 'error'">
-            <h2>Ошибка, обратитесь на ресепшн</h2>
+            <div class="wrapper">
+                <h3 class="hello">Дорогой гость,<br>рады видеть Вас в</h3>
+                <div class="rectangle">
+                    <div class="rectangle-green">
+                        <h2 class=" text-x5">Х5</h2>
+                    </div>
+                    <div class="rectangle-gradient">
+                        <h2 class="text-podsobke">ПОДСОБКЕ</h2>
+                    </div>
+                </div>
+                <p class="notification">
+                    Для внесения в список <br> вам необходимо обратиться <br> к администратору зала
+                </p>
+            </div>
         </div>
     </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
 import guests from '@/assets/storage/guests.json';
+import SVGx5 from '@/components/svg/SVGx5.vue';
 const currentState = ref('waiting');
 const barcode = ref('');
 const testBarcode = ref('');   /*  Удалить строку в релизе. Для тестов*/
@@ -44,9 +73,7 @@ const checkGuest = (code) => {
     const guest = guests.find(g => g.code === code);
     if (guest) {
         if (guest.name && guest.name.trim() !== '') {
-            greetingMessage.value = `Привет, ${guest.name}`;
-        } else {
-            greetingMessage.value = 'Привет, гость';
+            greetingMessage.value = `${guest.name}`;
         }
         currentState.value = 'greeting';
     } else {
@@ -74,14 +101,117 @@ onMounted(() => {
 </script>
 
 <style>
-.Container {
-    text-align: center;
-    margin-top: 50px;
+.container {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1080px;
+    height: 1920px;
+    background-color: #003E14;
+
 }
+
+.logo {
+    position: relative;
+    top: 107px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.image {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+}
+
+.gradient-circle {
+    position: absolute;
+    width: 2047px;
+    height: 2047px;
+    left: -483px;
+    top: -853px;
+    background: radial-gradient(circle at center,
+            rgba(13, 103, 6, 0.138) 0%,
+            rgba(0, 50, 16, 0.46) 100%);
+    filter: blur(27.1px);
+    border-radius: 1000px;
+    pointer-events: none;
+}
+
 
 input {
     margin-top: 10px;
     padding: 8px;
     font-size: 16px;
+}
+
+
+.wrapper {
+    position: relative;
+    top: 200px;
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px
+}
+
+.hello {
+    font-size: 82px;
+    text-align: center;
+}
+
+.rectangle {
+    display: flex;
+    height: 135px;
+}
+
+.rectangle-green {
+    position: relative;
+    left: 60px;
+    width: 310px;
+    background: #5FAF2D;
+    border-radius: 74.35px;
+}
+
+.rectangle-gradient {
+    position: relative;
+    left: -60px;
+    width: 570.45px;
+    background: linear-gradient(rgba(24, 25, 34, 0.3) 17.93%, rgba(95, 175, 45, 0.15) 100%);
+    backdrop-filter: blur(8.5px);
+    border-radius: 74.35px;
+}
+
+
+
+.text-x5 {
+    position: relative;
+    left: 15%;
+    top: 15%;
+    transform: translateX(-50%, -50%);
+    font-size: 82px;
+}
+
+.text-podsobke {
+    position: relative;
+    left: 5%;
+    top: 15%;
+    transform: translateX(-50%, -50%);
+    font-size: 82px;
+}
+
+.notification {
+    position: relative;
+    width: 80%;
+    top: 50px;
+    font-size: 44px;
+    text-align: center;
+    color: #FFFFFF;
+    line-height: 0.9;
+    margin: 0;
+    padding: 0;
 }
 </style>
