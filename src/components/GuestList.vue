@@ -4,8 +4,6 @@
     <div class="guest-form ">
       <div v-for="guest in guests" :key="guest.id" class="guest-card">
         <p>{{ guest.name }} {{ guest.surname }}</p>
-        <p>ID: {{ guest.id }}</p>
-        <img :src="guest.qrCode" alt="QR Code" />
         <button @click="downloadQRCode(guest)">Скачать QR</button>
       </div>
     </div>
@@ -67,17 +65,12 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  height: 100%;
+  justify-content: space-between;
 }
 
 
 
-.guest-card img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
 
 .guest-card p {
   margin: 0;
@@ -107,10 +100,6 @@ export default {
     gap: 15px;
   }
 
-  .guest-card img {
-    width: 100px;
-    height: 100px;
-  }
 
   .guest-card p {
     font-size: 14px;
