@@ -8,7 +8,7 @@
                     <h2 class="hello">Отсканируйте<br>своё приглашение</h2>
                     <input ref="barcodeInput" v-model="barcode" type="text"
                         style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
-
+                    <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" />
                 </div>
             </div>
             <div v-else-if="currentState === 'greeting'">
@@ -52,6 +52,8 @@ const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
+const testBarcode = ref('');   /*  Удалить строку в релизе. Для тестов*/
+
 let timeoutId = null;
 
 const handleScan = () => {
@@ -60,6 +62,13 @@ const handleScan = () => {
         barcode.value = '';
     }
 };
+const handleTestInput = () => {
+    if (testBarcode.value.length >= 1) {
+        checkGuest(testBarcode.value);
+        testBarcode.value = '';
+    }
+};
+
 
 const checkGuest = (id) => {
     const scannedId = String(id).trim();
@@ -160,6 +169,7 @@ onMounted(() => {
         font-size: calc(var(--index)*3.5);
     }
 }
+
 .rectangle {
     display: flex;
     height: 135px;
@@ -181,6 +191,7 @@ onMounted(() => {
     backdrop-filter: blur(8.5px);
     border-radius: 74.35px;
 }
+
 .text-x5 {
     position: relative;
     left: 15%;
