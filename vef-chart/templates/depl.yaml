@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
         - name: prm-frontend-dev-01
-          image: docker-prm.x5.ru/vef-temp:c912dc2d
+          image: {{ .Values.image }}
           ports:
             - name: http
               containerPort: 80

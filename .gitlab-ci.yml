@@ -1,3 +1,7 @@
+stages:
+  - build
+  - deploy
+
 Build_image:
   tags:
     - "prm-project-dev"
@@ -20,10 +24,41 @@ Build_image:
       --dockerfile=Dockerfile 
       --destination=docker-prm.x5.ru/${SERVICE_NAME}-temp:${IMAGE_TAG}
   rules:
-    - if: $PROJECT__PENDING_ORDERS_SEND_TO_MQ_INTEGRO_AZP != null || $PROJECT__PENDING_ORDERS_SEND_TO_MQ_ALL != null
-      when: never
-    - if: $CI_COMMIT_TAG
-      variables:
-        IMAGE_TAG: $CI_COMMIT_TAG
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # - if: $PROJECT__PENDING_ORDERS_SEND_TO_MQ_INTEGRO_AZP != null || $PROJECT__PENDING_ORDERS_SEND_TO_MQ_ALL != null
+    #   when: never
+    # - if: $CI_COMMIT_TAG
+    #   variables:
+    #     IMAGE_TAG: $CI_COMMIT_TAG
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "web"
+
+Deploy:
+  tags:
+    - "prm-project-dev"
+  stage: deploy
+  image: docker-prm.x5.ru/werf:2a181e07
+  variables:
+    KUBERNETES_SERVICE_ACCOUNT_OVERWRITE: gitlab-account
+    GIT_SUBMODULE_STRATEGY: recursive
+    SERVICE_NAME: vef
+    IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+    IMAGE: docker-prm.x5.ru/${SERVICE_NAME}-temp:${IMAGE_TAG}
+  script:
+    - /werf helm upgrade --history-max 3 
+      --atomic
+      --install vef-dev ./vef-chart
+      --set image=${IMAGE}
+      --log-debug=true
+      --log-color-mode=on 
+      --add-annotation werf.io/show-service-messages=true
+      --add-annotation werf.io/fail-mode=HopeUntilEndOfDeployProcess
+      --add-annotation werf.io/failures-allowed-per-replica=5 
+      --timeout=10m0s
+  rules:
+    # - if: $PROJECT__PENDING_ORDERS_SEND_TO_MQ_INTEGRO_AZP != null || $PROJECT__PENDING_ORDERS_SEND_TO_MQ_ALL != null
+    #   when: never
+    # - if: $CI_COMMIT_TAG
+    #   variables:
+    #     IMAGE_TAG: $CI_COMMIT_TAG
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "web"
