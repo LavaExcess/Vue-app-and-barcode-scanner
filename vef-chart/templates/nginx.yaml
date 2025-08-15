@@ -39,7 +39,7 @@ data:
               text/xml;
         
             server {
-                listen  8080;
+                listen  80;
                 charset UTF-8;                
 
                 location / {
