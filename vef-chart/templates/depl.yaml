@@ -56,6 +56,13 @@ spec:
             privileged: false
             # runAsNonRoot: true
             allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: vef-nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: vef-nginx-conf
+              mountPath: "/etc/nginx/mime.types"
+              subPath: mime-types
       # securityContext:
       #   runAsNonRoot: true
       #   fsGroup: 1001
@@ -70,6 +77,10 @@ spec:
                     operator: In
                     values:
                       - frontend
+      volumes:
+        - name: vef-nginx-conf
+          configMap:
+            name: vef-nginx-conf
 ---
 apiVersion: v1
 kind: Service
