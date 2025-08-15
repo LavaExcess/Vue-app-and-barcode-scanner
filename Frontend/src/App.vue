@@ -1,9 +1,9 @@
 <script setup>
 import Authorization from './components/Authorization.vue'
-import qrGenerator from './components/qrGenerator.vue'
+import Guest from './components/GuestList.vue'
 </script>
 
 <template>
   <Authorization />
-  <qrGenerator />
+  <Guest />
 </template>

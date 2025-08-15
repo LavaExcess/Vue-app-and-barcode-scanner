@@ -10,7 +10,8 @@
                     <input ref="barcodeInput" v-model="barcode" type="text"
                         style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
                     <!-- Удалить строку в релизе. Для тестов-->
-                    <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput" class="input" />
+                    <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput"
+                        class="input" />
                 </div>
             </div>
             <div v-else-if="currentState === 'greeting'">
@@ -48,9 +49,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import guests from '/public/guests.json';
 import SVGx5 from '@/components/svg/SVGx5.vue';
-
 const currentState = ref('waiting');
 const barcode = ref('');
 const testBarcode = ref('');   /*  Удалить строку в релизе. Для тестов*/
@@ -73,27 +73,16 @@ const handleTestInput = () => {
     }
 };
 
-const checkGuest = async (id) => {
-    try {
-        const response = await axios.get('http://localhost:3000/api/guests');
-        const guests = response.data;
-
-        const guestId = Number(id);
-        const guest = guests.find(g => g.id === guestId);
-
-        if (guest) {
-            if (guest.name && guest.name.trim() !== '') {
-                greetingMessage.value = `${guest.name} ${guest.surname}`;
-            }
-            currentState.value = 'greeting';
-        } else {
-            currentState.value = 'error';
+const checkGuest = (id) => {
+    const guest = guests.find(g => g.id === id);
+    if (guest) {
+        if (guest.name && guest.name.trim() !== '') {
+            greetingMessage.value = `${guest.name}`;
         }
-    } catch (error) {
-        console.error('Ошибка при проверке гостя:', error);
+        currentState.value = 'greeting';
+    } else {
         currentState.value = 'error';
     }
-
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
         resetToWaiting();
@@ -181,6 +170,13 @@ onMounted(() => {
     font-size: 82px;
     text-align: center;
 }
+
+@media (max-width: 700px) {
+    .hello {
+        font-size: calc(var(--index)*4);
+    }
+}
+
 
 .rectangle {
     display: flex;
