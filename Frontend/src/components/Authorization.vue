@@ -1,5 +1,4 @@
 <template>
-    <!-- Весь template остаётся без изменений -->
     <div class="container">
         <div class="gradient-circle"></div>
         <div class="container-image">
@@ -49,7 +48,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import guests from '/public/guests.json';
+import guests from '@/assets/storage/guests.json';
 import SVGx5 from '@/components/svg/SVGx5.vue';
 const currentState = ref('waiting');
 const barcode = ref('');
@@ -74,15 +73,19 @@ const handleTestInput = () => {
 };
 
 const checkGuest = (id) => {
-    const guest = guests.find(g => g.id === id);
+    const scannedId = String(id).trim();
+
+    const guest = guests.find(g => String(g.id).trim() === scannedId);
+
     if (guest) {
         if (guest.name && guest.name.trim() !== '') {
-            greetingMessage.value = `${guest.name}`;
+            greetingMessage.value = guest.name.trim();
         }
         currentState.value = 'greeting';
     } else {
         currentState.value = 'error';
     }
+
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
         resetToWaiting();
