@@ -8,14 +8,12 @@
                     <h2 class="hello">Отсканируйте<br>своё приглашение</h2>
                     <input ref="barcodeInput" v-model="barcode" type="text"
                         style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
-                    <!-- Удалить строку в релизе. Для тестов-->
-                    <input v-model="testBarcode" type="text" placeholder="QR-Код для теста" @input="handleTestInput"
-                        class="input" />
+
                 </div>
             </div>
             <div v-else-if="currentState === 'greeting'">
                 <div class="wrapper">
-                    <h3 class="hello">{{ greetingMessage }}, рады Вас видеть в</h3>
+                    <h3 class="hello">{{ greetingMessage }}, рады<br>Вас видеть в</h3>
                     <div class="rectangle">
                         <div class="rectangle-green">
                             <h2 class=" text-x5">Х5</h2>
@@ -52,7 +50,6 @@ import guests from '@/assets/storage/guests.json';
 import SVGx5 from '@/components/svg/SVGx5.vue';
 const currentState = ref('waiting');
 const barcode = ref('');
-const testBarcode = ref('');   /*  Удалить строку в релизе. Для тестов*/
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
 let timeoutId = null;
@@ -61,14 +58,6 @@ const handleScan = () => {
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
         barcode.value = '';
-    }
-};
-
-/*  Удалить строку в релизе. Для тестов*/
-const handleTestInput = () => {
-    if (testBarcode.value.length >= 1) {
-        checkGuest(testBarcode.value);
-        testBarcode.value = '';
     }
 };
 
@@ -109,7 +98,8 @@ onMounted(() => {
 <style>
 .container {
     width: 100%;
-    height: 1920px;
+    height: 100%;
+    min-height: 1920px;
     background-color: #003E14;
 
 }
@@ -124,7 +114,7 @@ onMounted(() => {
 
 .container-image {
     width: 100%;
-    height: 100%;
+    height: 1920px;
     position: relative;
     user-select: none;
     background-image: url("@/assets/img/layer1.png");
@@ -148,15 +138,6 @@ onMounted(() => {
     pointer-events: none;
 }
 
-
-.input {
-    margin-top: 10px;
-    padding: 8px;
-    font-size: 16px;
-    z-index: 1000;
-}
-
-
 .wrapper {
     position: relative;
     top: 200px;
@@ -176,11 +157,9 @@ onMounted(() => {
 
 @media (max-width: 700px) {
     .hello {
-        font-size: calc(var(--index)*4);
+        font-size: calc(var(--index)*3.5);
     }
 }
-
-
 .rectangle {
     display: flex;
     height: 135px;
@@ -202,9 +181,6 @@ onMounted(() => {
     backdrop-filter: blur(8.5px);
     border-radius: 74.35px;
 }
-
-
-
 .text-x5 {
     position: relative;
     left: 15%;

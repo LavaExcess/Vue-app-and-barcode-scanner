@@ -1,12 +1,13 @@
 <template>
-
-  <h1>Список гостей</h1>
-  <div class="guest-form ">
-    <div v-for="guest in guests" :key="guest.id" class="guest-card">
-      <p>{{ guest.name }} {{ guest.surname }}</p>
-      <p>ID: {{ guest.id }}</p>
-      <img :src="guest.qrCode" alt="QR Code" />
-      <button @click="downloadQRCode(guest)">Скачать QR</button>
+  <div class="container">
+    <h1 class="hello">Список гостей</h1>
+    <div class="guest-form ">
+      <div v-for="guest in guests" :key="guest.id" class="guest-card">
+        <p>{{ guest.name }} {{ guest.surname }}</p>
+        <p>ID: {{ guest.id }}</p>
+        <img :src="guest.qrCode" alt="QR Code" />
+        <button @click="downloadQRCode(guest)">Скачать QR</button>
+      </div>
     </div>
   </div>
 </template>
