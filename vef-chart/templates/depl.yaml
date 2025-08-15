@@ -1,0 +1,86 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vef
+  namespace: prm-frontend-dev-01
+  annotations:
+    cert-manager.io/cluster-issuer: vault-issuer
+    cert-manager.io/duration: 8760h
+    cert-manager.io/renew-before: 336h
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vef.k8s.loymax-dev-14.salt.x5.ru
+      secretName: vef-frontend-tls
+  rules:
+    - host: vef.k8s.loymax-dev-14.salt.x5.ru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vef
+                port:
+                  number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vef
+  namespace: prm-frontend-dev-01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/prm-application: vef
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/prm-application: vef
+    spec:
+      containers:
+        - name: prm-frontend-dev-01
+          image: {{ .Values.image }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          imagePullPolicy: Always
+          securityContext:
+            # capabilities:
+            #   drop:
+            #     - ALL
+            privileged: false
+            # runAsNonRoot: true
+            allowPrivilegeEscalation: false
+      # securityContext:
+      #   runAsNonRoot: true
+      #   fsGroup: 1001
+      imagePullSecrets:
+        - name: prm-repository-creds
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role
+                    operator: In
+                    values:
+                      - frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vef
+  namespace: prm-frontend-dev-01
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/prm-application: vef
