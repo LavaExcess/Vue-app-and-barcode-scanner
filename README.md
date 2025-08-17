@@ -1,35 +1,27 @@
-#
+# Х5 для ВЭФ
 
-This template should help get you started developing with Vue 3 in Vite.
+Приложение для прохода на закрытое мероприятие «Х5 Подсобка» через сканирование персонального кода.
 
-## Recommended IDE Setup
+## Инструкция
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Приложение доступно в трех режимах:
+1. [Боевой режим](https://vef.k8s.loymax-dev-14.salt.x5.ru/) — режим работы со сканером (только для КСО)
+1. [Тестовый режим](https://vef.k8s.loymax-dev-14.salt.x5.ru/test) — режим тестирования в браузере
+1. [Администратор](https://vef.k8s.loymax-dev-14.salt.x5.ru/test) — режим скачивания пригласительных QR-кодов
 
-## Customize configuration
+Управление списком гостей в целях безопасности производится ТОЛЬКО ВРУЧНУЮ и постоянно [доступен online](https://raw.githubusercontent.com/LavaExcess/Vue-app-and-barcode-scanner/refs/heads/main/src/assets/storage/guests.json), при этом, если по каким-то причинам доступ в интернет будет потерян, приложение продолжит работать, используя локальную базу гостей. Такой подход позволяет:
+* получить надежную работу приложения в автономном режиме (без доступа в интрнет);
+* осуществлять оперативное управление списком гостей (если интернет доступен).
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Разработка
 
-## Project Setup
-
+### Запуск в режиме разработки
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-
-### Run in Docker
+### Запуск через Docker
 
 ```sh
 docker build -t barcode/lastest .
