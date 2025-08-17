@@ -22,7 +22,7 @@
 </template>
 <script>
 import QRCode from 'qrcode'
-import guestData from '@/assets/storage/guests.json'
+import { fetchGuests } from '@/util'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
@@ -35,6 +35,9 @@ export default {
     }
   },
   async mounted() {
+    const guestData = await fetchGuests()
+    console.log(`Successfully loaded ${guestData.length} guests to admin`)
+
     try {
       const withQRCodes = await Promise.all(
         guestData.map(async guest => {
@@ -44,7 +47,7 @@ export default {
       )
       this.guests = withQRCodes
     } catch (err) {
-      console.error('Ошибка при работе с guests.json:', err)
+      console.warn('Ошибка при работе с guests.json:', err)
     }
   },
   methods: {
