@@ -6,9 +6,22 @@
             <div v-if="currentState === 'waiting'">
                 <div class="wrapper">
                     <h2 class="hello">Отсканируйте<br>своё приглашение</h2>
-                    <input ref="barcodeInput" v-model="barcode" type="text"
-                        style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
-
+                    <input
+                        v-if="props.isOnTesting"
+                        v-model="barcode"
+                        type="text"
+                        placeholder="QR-Код для теста"
+                        @input="handleScan"
+                    />
+                    <input
+                        v-else
+                        v-model="barcode"
+                        ref="barcodeInput"
+                        type="text"
+                        style="opacity: 0; position: absolute; left: -9999px;"
+                        @input="handleScan"
+                        placeholder=""
+                    />
                 </div>
             </div>
             <div v-else-if="currentState === 'greeting'">
@@ -45,14 +58,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import guests from '@/assets/storage/guests.json';
+import { ref, onMounted, defineProps } from 'vue';
+import { fetchGuests } from '@/util';
 import SVGx5 from '@/components/svg/SVGx5.vue';
+
 const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
 let timeoutId = null;
+
+const props = defineProps({
+    isOnTesting: Boolean
+})
 
 const handleScan = () => {
     if (barcode.value.length >= 1) {
@@ -63,7 +81,6 @@ const handleScan = () => {
 
 const checkGuest = (id) => {
     const scannedId = String(id).trim();
-
     const guest = guests.find(g => String(g.id).trim() === scannedId);
 
     if (guest) {
@@ -90,8 +107,18 @@ const resetToWaiting = () => {
 };
 
 const barcodeInput = ref(null);
+var guests;
 
-onMounted(() => {
+onMounted(async () => {
+    if (props.isOnTesting) {
+        console.warn("App is in TESTING mode!")
+    }
+
+    (async () => {
+        guests = await fetchGuests();
+        console.log(`Successfully loaded ${guests.length} guests to check`);
+    })();
+
     resetToWaiting();
 });
 </script>
