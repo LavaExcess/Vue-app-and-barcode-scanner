@@ -56,29 +56,24 @@
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref, onMounted, defineProps } from 'vue';
 import { fetchGuests } from '@/util';
 import SVGx5 from '@/components/svg/SVGx5.vue';
-
 const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
 let timeoutId = null;
-
 const props = defineProps({
     isOnTesting: Boolean
 })
-
 const handleScan = () => {
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
         barcode.value = '';
     }
 };
-
 const checkGuest = (id) => {
     const scannedId = String(id).trim();
     const guest = guests.find(g => String(g.id).trim() === scannedId);
@@ -91,13 +86,11 @@ const checkGuest = (id) => {
     } else {
         currentState.value = 'error';
     }
-
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
         resetToWaiting();
     }, timeoutSeconds.value * 3000);
 };
-
 const resetToWaiting = () => {
     currentState.value = 'waiting';
     greetingMessage.value = '';
@@ -105,20 +98,16 @@ const resetToWaiting = () => {
         barcodeInput.value.focus();
     }
 };
-
 const barcodeInput = ref(null);
 var guests;
-
 onMounted(async () => {
     if (props.isOnTesting) {
         console.warn("App is in TESTING mode!")
     }
-
     (async () => {
         guests = await fetchGuests();
         console.log(`Successfully loaded ${guests.length} guests to check`);
     })();
-
     resetToWaiting();
 });
 </script>
@@ -128,17 +117,13 @@ onMounted(async () => {
     height: 100%;
     min-height: 1920px;
     background-color: #003E14;
-
 }
-
 .logo {
     position: relative;
     top: 107px;
     left: 50%;
     transform: translateX(-50%);
-
 }
-
 .container-image {
     width: 100%;
     height: 1920px;
@@ -148,8 +133,6 @@ onMounted(async () => {
     background-size: cover;
     overflow: visible;
 }
-
-
 .gradient-circle {
     position: absolute;
     width: 100%;
@@ -164,7 +147,6 @@ onMounted(async () => {
     border-radius: 1000px;
     pointer-events: none;
 }
-
 .wrapper {
     position: relative;
     top: 200px;
@@ -176,12 +158,10 @@ onMounted(async () => {
     justify-content: center;
     gap: 30px
 }
-
 .hello {
     font-size: 82px;
     text-align: center;
 }
-
 @media (max-width: 700px) {
     .hello {
         font-size: calc(var(--index)*3.5);
@@ -191,7 +171,6 @@ onMounted(async () => {
     display: flex;
     height: 135px;
 }
-
 .rectangle-green {
     position: relative;
     left: 60px;
@@ -199,7 +178,6 @@ onMounted(async () => {
     background: #5FAF2D;
     border-radius: 74.35px;
 }
-
 .rectangle-gradient {
     position: relative;
     left: -60px;
@@ -215,7 +193,6 @@ onMounted(async () => {
     transform: translateX(-50%, -50%);
     font-size: 82px;
 }
-
 .text-podsobke {
     position: relative;
     left: 5%;
@@ -223,7 +200,6 @@ onMounted(async () => {
     transform: translateX(-50%, -50%);
     font-size: 82px;
 }
-
 .notification {
     position: relative;
     width: 80%;

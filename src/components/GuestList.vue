@@ -25,7 +25,6 @@ import QRCode from 'qrcode'
 import { fetchGuests } from '@/util'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-
 export default {
   name: 'GuestList',
   data() {
@@ -36,29 +35,25 @@ export default {
   },
   async mounted() {
     const guestData = await fetchGuests()
-    console.log(`Successfully loaded ${guestData.length} guests to admin`)
-
     try {
       const withQRCodes = await Promise.all(
         guestData.map(async guest => {
-          const qrDataUrl = await QRCode.toDataURL(JSON.stringify(guest))
+          const qrDataUrl = await QRCode.toDataURL(JSON.stringify({ id: guest.id }))
           return { ...guest, qrCode: qrDataUrl, downloaded: false }
         })
       )
       this.guests = withQRCodes
     } catch (err) {
-      console.warn('Ошибка при работе с guests.json:', err)
     }
   },
   methods: {
     downloadQRCode(guest) {
       const link = document.createElement('a')
       link.href = guest.qrCode
-      link.download = `${guest.name}_${guest.id}.png`
+      link.download = `${guest.name}.png`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-
       guest.downloaded = true
     },
     async downloadAllQRCodesZip() {
@@ -68,17 +63,13 @@ export default {
 
         for (const guest of this.guests) {
           const base64Data = guest.qrCode.split(',')[1]
-          folder.file(`${guest.name}_${guest.id}.png`, base64Data, { base64: true })
+          folder.file(`${guest.name}.png`, base64Data, { base64: true })
         }
-
         const content = await zip.generateAsync({ type: 'blob' })
         saveAs(content, 'qr_codes.zip')
-
-
         this.guests.forEach(g => g.downloaded = true)
         this.allDownloaded = true
       } catch (err) {
-        console.error('Ошибка при создании ZIP:', err)
       }
     }
   }
@@ -96,18 +87,22 @@ export default {
   font-weight: 500;
   transition: background-color 0.5s;
 }
+
 .download-all-btn:hover {
   background-color: #93c247;
 }
+
 .download-all-btn:active {
   transform: scale(0.97);
 }
+
 .guest-form {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   padding: 20px;
 }
+
 .guest-card {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -121,12 +116,14 @@ export default {
   height: 150px;
   justify-content: space-between;
 }
+
 .guest-card p {
   margin: 0;
   font-size: 16px;
   font-weight: 500;
   color: #333;
 }
+
 .guest-card button {
   padding: 8px 12px;
   background-color: #42b983;
