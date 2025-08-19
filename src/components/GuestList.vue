@@ -87,22 +87,18 @@ export default {
   font-weight: 500;
   transition: background-color 0.5s;
 }
-
 .download-all-btn:hover {
   background-color: #93c247;
 }
-
 .download-all-btn:active {
   transform: scale(0.97);
 }
-
 .guest-form {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   padding: 20px;
 }
-
 .guest-card {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -116,14 +112,12 @@ export default {
   height: 150px;
   justify-content: space-between;
 }
-
 .guest-card p {
   margin: 0;
   font-size: 16px;
   font-weight: 500;
   color: #333;
 }
-
 .guest-card button {
   padding: 8px 12px;
   background-color: #42b983;
@@ -134,39 +128,31 @@ export default {
   font-weight: 500;
   transition: background-color 0.2s, transform 0.1s;
 }
-
 .guest-card button:hover {
   background-color: #369870;
 }
-
 .guest-card button.success {
   background-color: #28a745;
 }
-
 .guest-card button:active {
   transform: scale(0.97);
 }
-
 .fade-scale-enter-active,
 .fade-scale-leave-active {
   transition: all 0.3s ease;
 }
-
 .fade-scale-enter-from {
   opacity: 0;
   transform: scale(0.8);
 }
-
 .fade-scale-enter-to {
   opacity: 1;
   transform: scale(1);
 }
-
 .fade-scale-leave-from {
   opacity: 1;
   transform: scale(1);
 }
-
 .fade-scale-leave-to {
   opacity: 0;
   transform: scale(0.8);
