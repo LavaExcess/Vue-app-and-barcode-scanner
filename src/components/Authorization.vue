@@ -74,7 +74,9 @@ socket.on('connect', ()=> {
 })
 
 socket.on('scanerData', (data) => {
-    checkGuest(data);
+    console.log(JSON.stringify(data));
+    var input = data[1]?.data
+    checkGuest(input);
 })
 
 const props = defineProps({
