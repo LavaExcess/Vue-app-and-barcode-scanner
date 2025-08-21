@@ -57,23 +57,37 @@
     </div>
 </template>
 <script setup>
+import { io } from 'socket.io-client';
 import { ref, onMounted, defineProps } from 'vue';
 import { fetchGuests } from '@/util';
 import SVGx5 from '@/components/svg/SVGx5.vue';
+
+const socket = io('http://localhost:9092')
 const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
 let timeoutId = null;
+
+socket.on('connect', ()=> {
+    console.log('Succesfully connect to Socket.IO')
+})
+
+socket.on('scanerData', (data) => {
+    checkGuest(data);
+})
+
 const props = defineProps({
     isOnTesting: Boolean
 })
+
 const handleScan = () => {
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
         barcode.value = '';
     }
 };
+
 const checkGuest = (id) => {
     const scannedId = String(id).trim();
     const guest = guests.find(g => String(g.id).trim() === scannedId);
