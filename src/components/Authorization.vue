@@ -73,10 +73,9 @@ socket.on('connect', ()=> {
     console.log('Succesfully connect to Socket.IO')
 })
 
-socket.on('scanerData', (data) => {
-    console.log(JSON.stringify(data));
-    var input = data[1]?.data
-    checkGuest(input);
+socket.on('scannerData', (payload) => {
+    console.log(JSON.stringify(payload));
+    checkGuest(payload.data);
 })
 
 const props = defineProps({
