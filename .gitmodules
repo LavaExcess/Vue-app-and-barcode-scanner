@@ -1,0 +1,3 @@
+[submodule "driver"]
+	path = driver
+	url = git@scm.x5.ru:feautureshop/deviceservice.git
