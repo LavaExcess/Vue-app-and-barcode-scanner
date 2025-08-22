@@ -6,22 +6,11 @@
             <div v-if="currentState === 'waiting'">
                 <div class="wrapper">
                     <h2 class="hello">Отсканируйте<br>своё приглашение</h2>
-                    <input
-                        v-if="props.isOnTesting"
-                        v-model="barcode"
-                        type="text"
-                        placeholder="QR-Код для теста"
-                        @input="handleScan"
-                    />
-                    <input
-                        v-else
-                        v-model="barcode"
-                        ref="barcodeInput"
-                        type="text"
-                        style="opacity: 0; position: absolute; left: -9999px;"
-                        @input="handleScan"
-                        placeholder=""
-                    />
+                    <QrcodeCapture v-if="props.isOnTesting" @decode="onDecode" @error="onError" accept="image/*"
+                        multiple />
+                    <input v-else v-model="barcode" ref="barcodeInput" type="text"
+                        style="opacity: 0; position: absolute; left: -9999px;" @input="handleScan" placeholder="" />
+                    <p v-if="errorMessage && props.isOnTesting" class="notification">{{ errorMessage }}</p>
                 </div>
             </div>
             <div v-else-if="currentState === 'greeting'">
@@ -56,18 +45,29 @@
         </div>
     </div>
 </template>
+
 <script setup>
 import { ref, onMounted, defineProps } from 'vue';
 import { fetchGuests } from '@/util';
 import SVGx5 from '@/components/svg/SVGx5.vue';
+import { QrcodeCapture } from 'vue3-qrcode-reader';
 const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
+const errorMessage = ref('');
 let timeoutId = null;
 const props = defineProps({
     isOnTesting: Boolean
-})
+});
+const guests = ref([]);
+const loadGuests = async () => {
+    try {
+        guests.value = await fetchGuests();
+    } catch (error) {
+        console.log("Ошибка загрузки гостей");
+    }
+};
 const handleScan = () => {
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
@@ -76,8 +76,7 @@ const handleScan = () => {
 };
 const checkGuest = (id) => {
     const scannedId = String(id).trim();
-    const guest = guests.find(g => String(g.id).trim() === scannedId);
-
+    const guest = guests.value.find(g => String(g.id).trim() === scannedId);
     if (guest) {
         if (guest.name && guest.name.trim() !== '') {
             greetingMessage.value = guest.name.trim();
@@ -99,18 +98,25 @@ const resetToWaiting = () => {
     }
 };
 const barcodeInput = ref(null);
-var guests;
+const onDecode = (decodedString) => {
+    let id = null;
+    try {
+        const data = JSON.parse(decodedString);
+        if (data?.id) id = parseInt(data.id, 10);
+    } catch {
+        id = parseInt(decodedString);
+    }
+    checkGuest(id);
+};
 onMounted(async () => {
     if (props.isOnTesting) {
-        console.warn("App is in TESTING mode!")
+        console.warn("App is in TESTING mode!");
     }
-    (async () => {
-        guests = await fetchGuests();
-        console.log(`Successfully loaded ${guests.length} guests to check`);
-    })();
+    await loadGuests();
     resetToWaiting();
 });
 </script>
+
 <style>
 .container {
     width: 100%;
@@ -118,12 +124,14 @@ onMounted(async () => {
     min-height: 1920px;
     background-color: #003E14;
 }
+
 .logo {
     position: relative;
     top: 107px;
     left: 50%;
     transform: translateX(-50%);
 }
+
 .container-image {
     width: 100%;
     height: 1920px;
@@ -133,6 +141,7 @@ onMounted(async () => {
     background-size: cover;
     overflow: visible;
 }
+
 .gradient-circle {
     position: absolute;
     width: 100%;
@@ -147,6 +156,7 @@ onMounted(async () => {
     border-radius: 1000px;
     pointer-events: none;
 }
+
 .wrapper {
     position: relative;
     top: 200px;
@@ -158,19 +168,23 @@ onMounted(async () => {
     justify-content: center;
     gap: 30px
 }
+
 .hello {
     font-size: 82px;
     text-align: center;
 }
+
 @media (max-width: 700px) {
     .hello {
         font-size: calc(var(--index)*3.5);
     }
 }
+
 .rectangle {
     display: flex;
     height: 135px;
 }
+
 .rectangle-green {
     position: relative;
     left: 60px;
@@ -178,6 +192,7 @@ onMounted(async () => {
     background: #5FAF2D;
     border-radius: 74.35px;
 }
+
 .rectangle-gradient {
     position: relative;
     left: -60px;
@@ -186,6 +201,7 @@ onMounted(async () => {
     backdrop-filter: blur(8.5px);
     border-radius: 74.35px;
 }
+
 .text-x5 {
     position: relative;
     left: 15%;
@@ -193,6 +209,7 @@ onMounted(async () => {
     transform: translateX(-50%, -50%);
     font-size: 82px;
 }
+
 .text-podsobke {
     position: relative;
     left: 5%;
@@ -200,6 +217,7 @@ onMounted(async () => {
     transform: translateX(-50%, -50%);
     font-size: 82px;
 }
+
 .notification {
     position: relative;
     width: 80%;
