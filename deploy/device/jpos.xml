@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jposEntries>
+    <JposEntry logicalName="MdScanner_1">
+        <creation factoryClass="com.mindeo.javapos.MDScannerServiceFactory"
+            serviceClass="com.mindeo.javapos.MDScannerService" />
+        <vendor name="Mindeo, Corp." />
+        <jpos category="Scanner" version="1.6" />
+        <product description="Mindeo Barcode Scanner" name="Mindeo Scanner" />
+        <prop name="Interface" type="String" value="HID" />
+        <prop name="Identifier" type="String" value="/dev/hidraw1" />
+    </JposEntry>
+</jposEntries>

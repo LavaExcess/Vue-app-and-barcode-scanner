@@ -1,0 +1,7 @@
+devices:
+    props:
+        1:
+            scanner: "MdScanner_1"
+            printer: "/dev/usb/lp0"
+
+testMode: false
