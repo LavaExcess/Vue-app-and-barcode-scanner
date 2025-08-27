@@ -4,4 +4,4 @@ devices:
             scanner: "MdScanner_1"
             printer: "/dev/usb/lp0"
 
-testMode: false
+testMode: true
