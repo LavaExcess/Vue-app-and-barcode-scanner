@@ -83,7 +83,12 @@ const props = defineProps({
 })
 
 const handleScan = () => {
-    console.log(barcode.value);
+    if (typeof barcode.value === "object") {
+        console.log(JSON.stringify(payload));
+    } else {
+        console.log(barcode.value);
+    }
+
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
         barcode.value = '';
