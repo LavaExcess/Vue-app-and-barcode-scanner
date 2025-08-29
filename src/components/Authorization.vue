@@ -74,7 +74,7 @@ socket.on('connect', ()=> {
 })
 
 socket.on('scannerData', (payload) => {
-    console.log(JSON.stringify(payload));
+    console.warn('Scanner event', payload.data);
     checkGuest(payload.data);
 })
 
@@ -83,11 +83,7 @@ const props = defineProps({
 })
 
 const handleScan = () => {
-    if (typeof barcode.value === "object") {
-        console.log(JSON.stringify(payload));
-    } else {
-        console.log(barcode.value);
-    }
+    console.log('Direct input', barcode.value);
 
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
@@ -95,9 +91,19 @@ const handleScan = () => {
     }
 };
 
-const checkGuest = (id) => {
-    const scannedId = String(id).trim();
+const checkGuest = (data) => {
+    try {
+        data = JSON.parse(data);
+    } catch (err) {
+        console.warn(err);
+        data = (typeof data === 'object') ? data : {"id": data};
+    }
+
+    const scannedId = String(data.id).trim();
     const guest = guests.find(g => String(g.id).trim() === scannedId);
+
+    console.log(data);
+    console.log(scannedId, guest?.name);
 
     if (guest) {
         if (guest.name && guest.name.trim() !== '') {
