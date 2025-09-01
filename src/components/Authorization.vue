@@ -93,6 +93,7 @@ const handleScan = () => {
 
 const checkGuest = (data) => {
     try {
+        console.log('Checking guest...')
         data = JSON.parse(data);
     } catch (err) {
         console.warn(err);
