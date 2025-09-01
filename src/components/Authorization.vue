@@ -93,18 +93,13 @@ const handleScan = () => {
 
 const checkGuest = (data) => {
     try {
-        console.log('Checking guest...')
-        data = JSON.parse(data);
+        console.log('Checking guest...', data)
+        const scannedId = String(data).trim();
+        const guest = guests.find(g => String(g.id).trim() === scannedId);
+        console.log(scannedId, guest?.name);
     } catch (err) {
         console.warn(err);
-        data = (typeof data === 'object') ? data : {"id": data};
     }
-
-    const scannedId = String(data.id).trim();
-    const guest = guests.find(g => String(g.id).trim() === scannedId);
-
-    console.log(data);
-    console.log(scannedId, guest?.name);
 
     if (guest) {
         if (guest.name && guest.name.trim() !== '') {
