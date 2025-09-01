@@ -67,6 +67,7 @@ const currentState = ref('waiting');
 const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
+let scannedId = '';
 let timeoutId = null;
 
 socket.on('connect', ()=> {
@@ -83,37 +84,41 @@ const props = defineProps({
 })
 
 const handleScan = (input) => {
+    scannedId += (input.data.length == 1) ? input.data : input.data;
     console.log('Direct input', input);
 
-    if (input.data.length >= 1) {
-        checkGuest(input.data);
-        barcode.value = '';
+    if (scannedId.length < 32) {
+        // Пропускаем для посимвольного ввода.
+        return ;
     }
+
+    checkGuest(scannedId);
+    barcode.value = '';
+    scannedId = '';
 };
 
-const checkGuest = (data) => {
+const checkGuest = (id) => {
     try {
-        console.log('Checking guest...', data)
-        const scannedId = String(data).trim();
+        console.log('Checking guest...', id)
         const guest = guests.find(g => String(g.id).trim() === scannedId);
         console.log(scannedId, guest?.name);
+
+        if (guest) {
+            if (guest.name && guest.name.trim() !== '') {
+                greetingMessage.value = guest.name.trim();
+            }
+            currentState.value = 'greeting';
+        } else {
+            currentState.value = 'error';
+        }
+
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            resetToWaiting();
+        }, timeoutSeconds.value * 3000);
     } catch (err) {
         console.warn(err);
     }
-
-    if (guest) {
-        if (guest.name && guest.name.trim() !== '') {
-            greetingMessage.value = guest.name.trim();
-        }
-        currentState.value = 'greeting';
-    } else {
-        currentState.value = 'error';
-    }
-
-    if (timeoutId) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-        resetToWaiting();
-    }, timeoutSeconds.value * 3000);
 };
 const resetToWaiting = () => {
     currentState.value = 'waiting';
