@@ -74,7 +74,7 @@ socket.on('connect', ()=> {
 })
 
 socket.on('scannerData', (payload) => {
-    console.warn('Scanner event', payload.data);
+    console.warn('Scanner event', payload);
     checkGuest(payload.data);
 })
 
@@ -83,7 +83,7 @@ const props = defineProps({
 })
 
 const handleScan = () => {
-    console.log('Direct input', barcode.value);
+    console.log('Direct input', barcode);
 
     if (barcode.value.length >= 1) {
         checkGuest(barcode.value);
