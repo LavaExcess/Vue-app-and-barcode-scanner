@@ -111,14 +111,14 @@ const checkGuest = (id) => {
         } else {
             currentState.value = 'error';
         }
-
-        if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            resetToWaiting();
-        }, timeoutSeconds.value * 3000);
     } catch (err) {
         console.warn(err);
     }
+
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+        resetToWaiting();
+    }, timeoutSeconds.value * 3000);
 };
 const resetToWaiting = () => {
     currentState.value = 'waiting';
