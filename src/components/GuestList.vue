@@ -38,7 +38,7 @@ export default {
     try {
       const withQRCodes = await Promise.all(
         guestData.map(async guest => {
-          const qrDataUrl = await QRCode.toDataURL(JSON.stringify({ id: guest.id }))
+          const qrDataUrl = await QRCode.toDataURL(guest.id)
           return { ...guest, qrCode: qrDataUrl, downloaded: false }
         })
       )
