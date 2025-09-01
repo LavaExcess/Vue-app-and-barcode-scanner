@@ -93,6 +93,10 @@ const handleScan = () => {
 
 const checkGuest = (data) => {
     try {
+        if (data.length != 32) {
+            return
+        }
+
         console.log('Checking guest...', data)
         const scannedId = String(data).trim();
         const guest = guests.find(g => String(g.id).trim() === scannedId);
@@ -109,6 +113,7 @@ const checkGuest = (data) => {
     } else {
         currentState.value = 'error';
     }
+
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
         resetToWaiting();
