@@ -9,6 +9,7 @@
                     <input
                         v-if="props.isOnTesting"
                         v-model="barcode"
+                        ref="barcode-input"
                         type="text"
                         placeholder="QR-Код для теста"
                         @input="handleScan"
@@ -16,7 +17,7 @@
                     <input
                         v-else
                         v-model="barcode"
-                        ref="barcodeInput"
+                        ref="barcode-input"
                         type="text"
                         style="opacity: 0; position: absolute; left: -9999px;"
                         @input="handleScan"
@@ -58,7 +59,7 @@
 </template>
 <script setup>
 import { io } from 'socket.io-client';
-import { ref, onMounted, defineProps } from 'vue';
+import { ref, onMounted, defineProps, useTemplateRef, nextTick } from 'vue';
 import { fetchGuests } from '@/util';
 import SVGx5 from '@/components/svg/SVGx5.vue';
 
@@ -68,7 +69,10 @@ const barcode = ref('');
 const greetingMessage = ref('');
 const timeoutSeconds = ref(1);
 const scannedId = ref('');
+const barcodeInput = useTemplateRef('barcode-input');
 let timeoutId = null;
+let guests;
+
 
 socket.on('connect', ()=> {
     console.log('Succesfully connect to Socket.IO')
@@ -93,7 +97,6 @@ const handleScan = (input) => {
     }
 
     checkGuest();
-    barcode.value = '';
     scannedId.value = '';
 };
 
@@ -120,18 +123,25 @@ const checkGuest = () => {
         resetToWaiting();
     }, timeoutSeconds.value * 3000);
 };
+
 const resetToWaiting = () => {
     currentState.value = 'waiting';
     greetingMessage.value = '';
-    barcodeInput.value.focus();
+
+    nextTick(() => {
+        if (barcodeInput.value) {
+            barcode.value ='';
+            barcodeInput.value.focus();
+        }
+    });
 };
-const barcodeInput = ref(null);
-var guests;
+
 onMounted(async () => {
     if (props.isOnTesting) {
         console.warn("App is in TESTING mode!")
     }
     (async () => {
+        await nextTick();
         guests = await fetchGuests();
         console.log(`Successfully loaded ${guests.length} guests to check`);
     })();
