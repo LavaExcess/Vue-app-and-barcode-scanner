@@ -50,7 +50,7 @@ export default {
     downloadQRCode(guest) {
       const link = document.createElement('a')
       link.href = guest.qrCode
-      link.download = `${guest.name}.png`
+      link.download = `${guest.id}.png`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -63,7 +63,7 @@ export default {
 
         for (const guest of this.guests) {
           const base64Data = guest.qrCode.split(',')[1]
-          folder.file(`${guest.name}.png`, base64Data, { base64: true })
+          folder.file(`${guest.id}.png`, base64Data, { base64: true })
         }
         const content = await zip.generateAsync({ type: 'blob' })
         saveAs(content, 'qr_codes.zip')

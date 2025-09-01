@@ -89,7 +89,7 @@ const props = defineProps({
 
 const handleScan = (input) => {
     scannedId.value += (input.data.length == 1) ? input.data : input.data;
-    console.log('Direct input', input);
+    // console.log('Direct input', input);
 
     if (scannedId.value.length < 32) {
         // Пропускаем для посимвольного ввода.
