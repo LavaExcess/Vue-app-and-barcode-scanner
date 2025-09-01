@@ -123,9 +123,7 @@ const checkGuest = () => {
 const resetToWaiting = () => {
     currentState.value = 'waiting';
     greetingMessage.value = '';
-    // if (barcodeInput.value) {
-    //     barcodeInput.value.focus();
-    // }
+    barcodeInput.value.focus();
 };
 const barcodeInput = ref(null);
 var guests;
