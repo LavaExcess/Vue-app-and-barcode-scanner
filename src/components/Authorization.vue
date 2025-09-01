@@ -82,21 +82,17 @@ const props = defineProps({
     isOnTesting: Boolean
 })
 
-const handleScan = () => {
-    console.log('Direct input', barcode);
+const handleScan = (input) => {
+    console.log('Direct input', input);
 
-    if (barcode.value.length >= 1) {
-        checkGuest(barcode.value);
+    if (input.data.length >= 1) {
+        checkGuest(input.data);
         barcode.value = '';
     }
 };
 
 const checkGuest = (data) => {
     try {
-        if (data.length != 32) {
-            return
-        }
-
         console.log('Checking guest...', data)
         const scannedId = String(data).trim();
         const guest = guests.find(g => String(g.id).trim() === scannedId);
