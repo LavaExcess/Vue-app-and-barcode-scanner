@@ -92,10 +92,16 @@ const handleScan = () => {
 };
 
 const checkGuest = (data) => {
+    let guest;
+
+    if (data.length < 36) {
+        return
+    }
+
     try {
         console.log('Checking guest...', data)
         const scannedId = String(data).trim();
-        const guest = guests.find(g => String(g.id).trim() === scannedId);
+        guest = guests.find(g => String(g.id).trim() === scannedId);
         console.log(scannedId, guest?.name);
     } catch (err) {
         console.warn(err);
