@@ -84,11 +84,13 @@ const props = defineProps({
 })
 
 const handleScan = (input) => {
-    console.log('Direct input', input.data);
+    console.log('Direct input', input);
 
     if (scannedId.value.length < 36) {
         scannedId.value += barcode.value;
     }
+
+    console.log(scannedId.value);
 
     if (scannedId.length == 36) {
         checkGuest(scannedId.value);
